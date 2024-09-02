@@ -17,7 +17,7 @@
 
 <h3 align="center">
     
-![github card](https://github-readme-stats.vercel.app/api/pin/?username=SACHINMUSIC&repo=SACHIN_MUSIC&theme=dark)
+![github card](https://github-readme-stats.vercel.app/api/pin/?username=SACHINMUSIC&repo=SAXHIN_MUSIC&theme=dark)
 
 
 
