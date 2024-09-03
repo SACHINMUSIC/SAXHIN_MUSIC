@@ -5,7 +5,6 @@ from os import environ
 from typing import Union, Optional
 from PIL import Image, ImageDraw, ImageFont
 from os import environ
-import random
 from pyrogram import Client, filters
 from pyrogram.types import ChatJoinRequest, InlineKeyboardButton, InlineKeyboardMarkup
 from PIL import Image, ImageDraw, ImageFont
@@ -22,20 +21,6 @@ from pyrogram import *
 from pyrogram.types import *
 from logging import getLogger
 
-
-random_photo = [
-    "https://telegra.ph/file/1949480f01355b4e87d26.jpg",
-    "https://telegra.ph/file/3ef2cc0ad2bc548bafb30.jpg",
-    "https://telegra.ph/file/a7d663cd2de689b811729.jpg",
-    "https://telegra.ph/file/6f19dc23847f5b005e922.jpg",
-    "https://telegra.ph/file/2973150dd62fd27a3a6ba.jpg",
-]
-# --------------------------------------------------------------------------------- #
-
-
-
-
-
 LOGGER = getLogger(__name__)
 
 class WelDatabase:
@@ -46,8 +31,7 @@ class WelDatabase:
         return chat_id in self.data
 
     async def add_wlcm(self, chat_id):
-        if chat_id not in self.data:
-            self.data[chat_id] = {"state": "on"}  # Default state is "on"
+        self.data[chat_id] = {}
 
     async def rm_wlcm(self, chat_id):
         if chat_id in self.data:
@@ -63,39 +47,36 @@ class temp:
     U_NAME = None
     B_NAME = None
 
-
-
-def circle(pfp, size=(500, 500), brightness_factor=10):
-    pfp = pfp.resize(size, Image.ANTIALIAS).convert("RGBA")
-    pfp = ImageEnhance.Brightness(pfp).enhance(brightness_factor)
+def circle(pfp, size=(500, 500)):
+    pfp = pfp.resize(size, Image.LANCZOS).convert("RGBA")
     bigsize = (pfp.size[0] * 3, pfp.size[1] * 3)
     mask = Image.new("L", bigsize, 0)
     draw = ImageDraw.Draw(mask)
     draw.ellipse((0, 0) + bigsize, fill=255)
-    mask = mask.resize(pfp.size, Image.ANTIALIAS)
+    mask = mask.resize(pfp.size, Image.LANCZOS)
     mask = ImageChops.darker(mask, pfp.split()[-1])
     pfp.putalpha(mask)
     return pfp
 
-def welcomepic(pic, user, chatname, id, uname, brightness_factor=1.3):
-    background = Image.open("SACHIN_MUSIC/assets/wel2.png")
-    pfp = Image.open(pic).convert("RGBA")
-    pfp = circle(pfp, brightness_factor=brightness_factor) 
-    pfp = pfp.resize((500, 500))
-    draw = ImageDraw.Draw(background)
-    font = ImageFont.truetype('SACHIN_MUSIC/assets/font.ttf', size=60)
-    welcome_font = ImageFont.truetype('SACHIN_MUSIC/assets/font.ttf', size=60)
-    
- #   draw.text((630, 230), f"USERNAME : {uname}", fill=(255, 255, 255), font=font)
-   # draw.text((630, 300), f'NAME: {user}', fill=(255, 255, 255), font=font)
-    draw.text((630, 450), f'ID: {id}', fill=(255, 255, 255), font=font)
 
-    pfp_position = (48, 88)
+def welcomepic(pic, user, chatname, id, uname):
+    background = Image.open("SACHIN_MUSIC/assets/WELCOME.png")
+    pfp = Image.open(pic).convert("RGBA")
+    pfp = circle(pfp)
+    pfp = pfp.resize((1157, 1158))
+    draw = ImageDraw.Draw(background)
+    font = ImageFont.truetype('SACHIN_MUSIC/assets/font.ttf', size=110)
+    welcome_font = ImageFont.truetype('SACHIN_MUSIC/assets/font.ttf', size=60)
+    draw.text((1800, 700), f'NAME: {user}', fill=(255, 255, 255), font=font)
+    draw.text((1800, 830), f'ID: {id}', fill=(255, 255, 255), font=font)
+    draw.text((1800, 965), f"USERNAME : {uname}", fill=(255, 255, 255), font=font)
+    pfp_position = (391, 336)
     background.paste(pfp, pfp_position, pfp)
     background.save(f"downloads/welcome#{id}.png")
     return f"downloads/welcome#{id}.png"
-
-
+    
+    
+    
 @app.on_message(filters.command("welcome") & ~filters.private)
 async def auto_state(_, message):
     usage = "**ᴜsᴀɢᴇ:**\n**⦿ /welcome [on|off]**"
@@ -146,7 +127,7 @@ async def greet_new_member(_, member: ChatMemberUpdated):
                 user.photo.big_file_id, file_name=f"pp{user.id}.png"
             )
         except AttributeError:
-            pic = "SACHIN_MUSIC/assets/upic.png"
+            pic = "SACHIN_MUSIC/assets/WELCOME.png"
         if (temp.MELCOW).get(f"welcome-{member.chat.id}") is not None:
             try:
                 await temp.MELCOW[f"welcome-{member.chat.id}"].delete()
