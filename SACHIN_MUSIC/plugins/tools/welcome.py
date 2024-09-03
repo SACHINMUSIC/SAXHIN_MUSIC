@@ -63,19 +63,17 @@ def welcomepic(pic, user, chatname, id, uname):
     background = Image.open("SACHIN_MUSIC/assets/WELCOME.png")
     pfp = Image.open(pic).convert("RGBA")
     pfp = circle(pfp)
-    pfp = pfp.resize((1157, 1158))
+    pfp = pfp.resize((500, 500))
     draw = ImageDraw.Draw(background)
     font = ImageFont.truetype('SACHIN_MUSIC/assets/font.ttf', size=110)
     welcome_font = ImageFont.truetype('SACHIN_MUSIC/assets/font.ttf', size=60)
-    draw.text((1800, 700), f'NAME: {user}', fill=(255, 255, 255), font=font)
-    draw.text((1800, 830), f'ID: {id}', fill=(255, 255, 255), font=font)
-    draw.text((1800, 965), f"USERNAME : {uname}", fill=(255, 255, 255), font=font)
+    draw.text((630, 230), f'NAME: {user}', fill=(255, 255, 255), font=font)
+    draw.text((630, 300), f'ID: {id}', fill=(255, 255, 255), font=font)
+    draw.text((630, 450), f"USERNAME : {uname}", fill=(255, 255, 255), font=font)
     pfp_position = (391, 336)
     background.paste(pfp, pfp_position, pfp)
     background.save(f"downloads/welcome#{id}.png")
     return f"downloads/welcome#{id}.png"
-    
-    
     
 @app.on_message(filters.command("welcome") & ~filters.private)
 async def auto_state(_, message):
